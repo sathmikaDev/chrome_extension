@@ -1,0 +1,30 @@
+{
+    "manifest_version": 3,
+    "name": "Viva Schedule Notifier",
+    "version": "1.0",
+    "description": "Get notified when your viva schedule updates!",
+    "permissions": [
+      "identity",
+      "storage",
+      "activeTab",
+      "scripting",
+      "notifications"
+    ],
+    "oauth2": {
+      "client_id": "220501934503-3kg9rm31hulq11s4brheo1rn86t6imtd.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/userinfo.email"
+      ]
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "host_permissions": [
+      "https://docs.google.com/spreadsheets/*"
+    ]
+  }
+  

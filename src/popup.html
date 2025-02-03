@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Notifier</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Viva Schedule Notifier</h2>
+    <label for="sheetId">Google Sheet ID:</label>
+    <input type="text" id="sheetId" placeholder="Enter Sheet ID">
+
+    <label for="cellRange">Cell Range (e.g., A1:C5):</label>
+    <input type="text" id="cellRange" placeholder="Enter range">
+
+    <label for="email">Your Email:</label>
+    <input type="email" id="email" placeholder="Enter your email">
+
+    <button id="saveSettings">Save & Monitor</button>
+
+    <script src="popup.js"></script>
+</body>
+</html>
