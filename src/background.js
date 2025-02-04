@@ -19,6 +19,7 @@ async function monitorSheet() {
         try {
             const response = await fetch(url);
             const result = await response.json();
+            console.log(result)
 
             if (JSON.stringify(previousData) !== JSON.stringify(result.values)) {
                 previousData = result.values;
@@ -33,16 +34,17 @@ async function monitorSheet() {
 }
 
 function sendEmailNotification(userEmail) {
-    fetch("https://your-email-server.com/send", {
+    fetch("https://ecfd-112-135-204-205.ngrok-free.app/notify", { // Change to your deployed API URL later
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             to: userEmail,
             subject: "Viva Schedule Updated!",
-            text: "A change has been detected in your monitored range. Please check your viva schedule."
+            text: "A change has been detected in your monitored Google Sheet range."
         })
     })
     .then(response => response.json())
     .then(data => console.log("Email sent:", data))
     .catch(error => console.error("Email sending failed:", error));
 }
+

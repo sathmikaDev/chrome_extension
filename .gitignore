@@ -1,0 +1,33 @@
+# 🚀 Node.js dependencies
+backend/node_modules/
+backend/package-lock.json
+
+# 🔐 Environment variables
+backend/.env
+
+# 🔥 Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 📦 Compiled files & cache
+dist/
+build/
+.cache/
+.DS_Store
+
+# 💾 System-specific files
+Thumbs.db
+*.swp
+
+# 🔍 VS Code settings (optional)
+.vscode/
+
+# 🔍 Chrome Extension Build Files (if applicable)
+*.crx
+*.pem
+
+# 🚀 Ignore ngrok tunnel URL files (if used)
+ngrok.log

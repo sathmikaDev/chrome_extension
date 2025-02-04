@@ -1,15 +1,29 @@
-document.getElementById("saveSettings").addEventListener("click", async () => {
+document.getElementById("startTracking").addEventListener("click", () => {
     const sheetId = document.getElementById("sheetId").value;
-    const cellRange = document.getElementById("cellRange").value;
-    const email = document.getElementById("email").value;
+    const range = document.getElementById("range").value;
+    const userEmail = document.getElementById("userEmail").value;
 
-    if (!sheetId || !cellRange || !email) {
-        alert("Please fill in all fields!");
+    if (!sheetId || !range || !userEmail) {
+        alert("Please enter all details.");
         return;
     }
 
-    chrome.storage.sync.set({ sheetId, cellRange, email }, () => {
-        alert("Settings saved. Monitoring enabled!");
-        chrome.runtime.sendMessage({ action: "startMonitoring" });
+    chrome.storage.local.set({ sheetId, range, userEmail }, () => {
+        alert("Tracking started for range: " + range);
+    });
+
+    // Send request to Google Apps Script to start monitoring
+    fetch("https://script.google.com/macros/s/AKfycbwP1fx-v6S1eIu85hQ9NPO8Hrz7IL3d5E4bkOaVO8rmtqeZNAy_-V3S5mO4wvZG1R7G/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sheetId, range, userEmail })
+    }).then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error("Error starting tracking:", error));
+});
+
+document.getElementById("stopTracking").addEventListener("click", () => {
+    chrome.storage.local.remove(["sheetId", "range", "userEmail"], () => {
+        alert("Tracking stopped.");
     });
 });
