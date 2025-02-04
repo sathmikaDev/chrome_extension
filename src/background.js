@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function monitorSheet() {
-    chrome.storage.sync.get(["sheetId", "cellRange", "email"], async (data) => {
+    chrome.storage.local.get(["sheetId", "range", "userEmail"], async (data) => {
         if (!data.sheetId || !data.cellRange || !data.email) {
             console.error("Missing settings!");
             return;
@@ -23,7 +23,7 @@ async function monitorSheet() {
 
             if (JSON.stringify(previousData) !== JSON.stringify(result.values)) {
                 previousData = result.values;
-                sendEmailNotification(data.email);
+                sendEmailNotification(result);
             }
 
             setTimeout(monitorSheet, 60000); // Check every minute
@@ -33,14 +33,15 @@ async function monitorSheet() {
     });
 }
 
-function sendEmailNotification(userEmail) {
+function sendEmailNotification(result) {
     fetch("https://ecfd-112-135-204-205.ngrok-free.app/notify", { // Change to your deployed API URL later
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            to: userEmail,
-            subject: "Viva Schedule Updated!",
-            text: "A change has been detected in your monitored Google Sheet range."
+            sheetId: result.sheetId,
+            sheetName: "Unknown Sheet",
+            cell: "Unknown Cell",
+            newValue: "Updated Data"
         })
     })
     .then(response => response.json())

@@ -12,11 +12,16 @@ document.getElementById("startTracking").addEventListener("click", () => {
         alert("Tracking started for range: " + range);
     });
 
+    chrome.runtime.sendMessage({
+        action: "startMonitoring",
+        config: { sheetId, range }
+    });
+
     // Send request to Google Apps Script to start monitoring
-    fetch("https://script.google.com/macros/s/AKfycbwP1fx-v6S1eIu85hQ9NPO8Hrz7IL3d5E4bkOaVO8rmtqeZNAy_-V3S5mO4wvZG1R7G/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbyt1sWAyVWDT_EfR9c0vesUvVXrbXW7_5roj-4lxE1U59AFnheFZFVRKpZv2vxZW5zA/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sheetId, range, userEmail })
+        body: JSON.stringify({ action: "setSettings", sheetId, range, userEmail })
     }).then(response => response.json())
     .then(data => console.log(data))
     .catch(error => console.error("Error starting tracking:", error));
@@ -25,5 +30,8 @@ document.getElementById("startTracking").addEventListener("click", () => {
 document.getElementById("stopTracking").addEventListener("click", () => {
     chrome.storage.local.remove(["sheetId", "range", "userEmail"], () => {
         alert("Tracking stopped.");
+    });
+    document.getElementById("stopTracking").addEventListener("click", () => {
+        chrome.runtime.sendMessage({ action: "stopMonitoring" });
     });
 });
