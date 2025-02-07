@@ -26,7 +26,7 @@ async function monitorSheet() {
                 sendEmailNotification(result);
             }
 
-            setTimeout(monitorSheet, 60000); // Check every minute
+            // setTimeout(monitorSheet, 60000);
         } catch (error) {
             console.error("Error fetching Google Sheets data:", error);
         }
