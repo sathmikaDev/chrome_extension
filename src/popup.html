@@ -3,19 +3,27 @@
 <head>
     <title>Sheet Notifier</title>
     <script src="popup.js" defer></script>
+    <style>
+        body { padding: 20px; min-width: 300px; }
+        label { display: block; margin-top: 10px; }
+        input { width: 100%; margin-bottom: 10px; padding: 5px; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
 </head>
 <body>
-    <h2>Google Sheet Notifier</h2>
-    <label>Google Sheet ID:</label>
-    <input type="text" id="sheetId" placeholder="Enter Sheet ID">
+<h2>Google Sheet Notifier</h2>
 
-    <label>Range (e.g., A1:C10):</label>
-    <input type="text" id="range" placeholder="Enter Range">
+<label>Google Sheet ID:</label>
+<input type="text" id="sheetId" placeholder="Enter Sheet ID">
 
-    <label>Your Email:</label>
-    <input type="email" id="userEmail" placeholder="Enter Email">
+<label>Range (e.g., A1:C10):</label>
+<input type="text" id="range" placeholder="Enter Range">
 
-    <button id="startTracking">Start Tracking</button>
-    <button id="stopTracking">Stop Tracking</button>
+<label>Your Email:</label>
+<input type="email" id="userEmail" placeholder="Enter Email">
+
+<button id="startTracking">Start Tracking</button>
+<button id="stopTracking">Stop Tracking</button>
+<div id="status"></div>
 </body>
 </html>

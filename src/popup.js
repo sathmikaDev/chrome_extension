@@ -1,37 +1,56 @@
-document.getElementById("startTracking").addEventListener("click", () => {
-    const sheetId = document.getElementById("sheetId").value;
-    const range = document.getElementById("range").value;
-    const userEmail = document.getElementById("userEmail").value;
+// popup.js
+document.addEventListener('DOMContentLoaded', () => {
+    const statusDiv = document.getElementById('status');
 
-    if (!sheetId || !range || !userEmail) {
-        alert("Please enter all details.");
-        return;
-    }
+    document.getElementById("startTracking").addEventListener("click", async () => {
+        try {
+            const sheetId = document.getElementById("sheetId").value.trim();
+            const range = document.getElementById("range").value.trim();
+            const userEmail = document.getElementById("userEmail").value.trim();
 
-    chrome.storage.local.set({ sheetId, range, userEmail }, () => {
-        alert("Tracking started for range: " + range);
+            if (!sheetId || !range || !userEmail) {
+                throw new Error("Please fill in all fields");
+            }
+
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+            if (!tab.url.includes('docs.google.com/spreadsheets')) {
+                throw new Error("Please open the Google Sheet you want to track");
+            }
+
+            chrome.storage.local.set({ sheetId, range, userEmail }, () => {
+                alert("Tracking started for range: " + range);
+            });
+
+            // Send request to Google Apps Script to start monitoring
+            fetch("https://script.google.com/macros/s/AKfycbyVB0-nJ5SlZoUE4ZDJ57bNQp83SyVQV1xrTo8sW14f32PgDgMI1RlkwXoEASRexrP4hQ/exec", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "setSettings", sheetId, range, userEmail })
+            }).then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error("Error starting tracking:", error));
+
+            statusDiv.textContent = "Tracking started!";
+
+        } catch (error) {
+            statusDiv.textContent = `Error: ${error.message}`;
+        }
     });
 
-    chrome.runtime.sendMessage({
-        action: "startMonitoring",
-        config: { sheetId, range }
-    });
+    document.getElementById("stopTracking").addEventListener("click", async () => {
+        try {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            console.log(tab);
 
-    // Send request to Google Apps Script to start monitoring
-    fetch("https://script.google.com/macros/s/AKfycbyt1sWAyVWDT_EfR9c0vesUvVXrbXW7_5roj-4lxE1U59AFnheFZFVRKpZv2vxZW5zA/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "setSettings", sheetId, range, userEmail })
-    }).then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error("Error starting tracking:", error));
-});
+            chrome.storage.local.remove(["sheetId", "range", "userEmail"], () => {
+                alert("Tracking stopped.");
+            });
 
-document.getElementById("stopTracking").addEventListener("click", () => {
-    chrome.storage.local.remove(["sheetId", "range", "userEmail"], () => {
-        alert("Tracking stopped.");
-    });
-    document.getElementById("stopTracking").addEventListener("click", () => {
-        chrome.runtime.sendMessage({ action: "stopMonitoring" });
+            statusDiv.textContent = "Tracking stopped";
+
+        } catch (error) {
+            statusDiv.textContent = `Error: ${error.message}`;
+        }
     });
 });
